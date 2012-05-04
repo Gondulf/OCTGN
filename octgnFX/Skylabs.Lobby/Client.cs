@@ -246,6 +246,40 @@ namespace Skylabs.Lobby
 
         private void XmppOnOnMessage(object sender, Message msg)
         {
+            if(msg.GetAttribute("type") == "gaming")
+            {
+                var e = msg.ChildNodes.Cast<Node>().FirstOrDefault(x=>x.NodeType == NodeType.Element && (x as Element) != null && (x as Element).TagName == "gaming");
+                if (e == null) return;
+                var elem = e as Element;
+                var type = elem.GetAttribute("type");
+                if (String.IsNullOrWhiteSpace(type)) return;
+                type = type.ToLower();
+
+                switch(type)
+                {
+                    case "created":
+                    {
+                        var gid = elem.GetAttribute("id");
+                        if (OnDataRecieved != null)
+                            OnDataRecieved.Invoke(this, DataRecType.Announcement, "Game " + gid + " Created");
+                        break;
+                    }
+                    case "started":
+                    {
+                        var gid = elem.GetTag("id");
+                        if (OnDataRecieved != null)
+                            OnDataRecieved.Invoke(this, DataRecType.Announcement, "Game " + gid + " Started");
+                        break;
+                    }
+                    case "ended":
+                    {
+                        var gid = elem.GetTag("id");
+                        if (OnDataRecieved != null)
+                            OnDataRecieved.Invoke(this, DataRecType.Announcement, "Game " + gid + " Ended");
+                        break;
+                    }
+                }
+            }
             if(msg.Type == MessageType.normal)
             {
                 if (msg.Subject == "gameready")
@@ -435,10 +469,8 @@ namespace Skylabs.Lobby
 
         public void BeginHostGame(Game game, string gamename)
         {
-            var data = String.Format("{0},:,{1},:,{2}",game.Id.ToString(),game.Version.ToString(),gamename);
-            var m = new Message(new Jid("gameserv@skylabsonline.com"),Me.User,MessageType.normal,data,"hostgame");
-            m.GenerateId();
-            Xmpp.Send(m);
+            var pack = PacketHelper.Gaming_CreateGame(game , gamename , Me.User);
+            Xmpp.Send(pack);
         }
 
         public void BeginGetGameList() 
