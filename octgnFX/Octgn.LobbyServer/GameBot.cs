@@ -30,7 +30,7 @@ namespace Skylabs.LobbyServer
                 Xmpp.Close();
                 Xmpp = null;
             }
-            Xmpp = new XmppClientConnection("skylabsonline.com");
+            Xmpp = new XmppClientConnection(Client.ServerName);
             //#else
             //            Xmpp = new XmppClientConnection();
             //            Xmpp.ConnectServer = "127.0.0.1";
@@ -81,7 +81,7 @@ namespace Skylabs.LobbyServer
             switch (pres.Type)
             {
                 case PresenceType.available:
-                    if(pres.From.Server == "conference.skylabsonline.com")
+                    if(pres.From.Server == "conference." + Client.ServerName)
                     {
                         if (!_userList.Contains(pres.MucUser.Item.Jid) && pres.MucUser.Item.Jid != Xmpp.MyJID)
                             _userList.Add(pres.MucUser.Item.Jid);
@@ -89,7 +89,7 @@ namespace Skylabs.LobbyServer
                     break;
                 case PresenceType.unavailable:
                 {
-                    if (pres.From.Server == "conference.skylabsonline.com")
+                    if (pres.From.Server == "conference." + Client.ServerName)
                     {
                         _userList.Remove(pres.MucUser.Item.Jid);
                     }
@@ -147,7 +147,7 @@ namespace Skylabs.LobbyServer
                             m.GenerateId();
                             Xmpp.Send(m);
                             var gameMessage = String.Format(" {0} is hosting a game called '{1}'" ,msg.From.User,gameName);
-                            m = new Message(new Jid("lobby@conference.skylabsonline.com"),msg.To,MessageType.groupchat,gameMessage);
+                            m = new Message(new Jid("lobby@conference." + Client.ServerName), msg.To, MessageType.groupchat, gameMessage);
                             Xmpp.Send(m);
                             RefreshLists();
                         }
@@ -211,7 +211,7 @@ namespace Skylabs.LobbyServer
         {
             Trace.WriteLine("[Bot]Login:" );
             var muc = new MucManager(Xmpp);
-            Jid room = new Jid("lobby@conference.skylabsonline.com");
+            Jid room = new Jid("lobby@conference." + Client.ServerName);
             muc.AcceptDefaultConfiguration(room);
             muc.JoinRoom(room, Xmpp.Username, Xmpp.Password, false);
         }

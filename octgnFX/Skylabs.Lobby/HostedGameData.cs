@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Skylabs.Net;
 using agsXMPP;
 using agsXMPP.Xml.Dom;
@@ -21,13 +22,13 @@ namespace Skylabs.Lobby
             
         }
 
-        public HostedGameData(Guid gameguid, Version gameversion, int port, string name, NewUser huser,
+        public HostedGameData(Guid gameguid, Version gameversion, long id, string name, NewUser huser,
                           DateTime startTime)
             : base("gameitem", "gameitem", "octgn:gameitem")
         {
             GameGuid = gameguid;
             GameVersion = gameversion;
-            Port = port;
+            ID = id;
             Name = name;
             UserHosting = huser;
             GameStatus = EHostedGame.StartedHosting;
@@ -39,7 +40,7 @@ namespace Skylabs.Lobby
         {
             GameGuid = (Guid) sm["guid"];
             GameVersion = (Version) sm["version"];
-            Port = (int) sm["port"];
+            ID = (long) sm["port"];
             Name = (string) sm["name"];
             UserHosting = ((NewUser) sm["hoster"]);
             GameStatus = EHostedGame.StartedHosting;
@@ -69,10 +70,10 @@ namespace Skylabs.Lobby
                 SetTag("version",value.ToString());
             }
         }
-        public int Port
+        public long ID
         {
-            get { return GetTagInt("port"); }
-            set{SetTag("port",value);}
+            get { return long.Parse(GetTag("port")); }
+            set{SetTag("port",value.ToString(CultureInfo.InvariantCulture));}
         }
         public String Name
         {

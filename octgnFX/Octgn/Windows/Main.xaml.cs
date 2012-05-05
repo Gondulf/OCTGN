@@ -557,14 +557,14 @@ namespace Octgn.Windows
             IPAddress ip = IPAddress.Parse("127.0.0.1");
 
 #else
-            var ad = Dns.GetHostAddresses("www.skylabsonline.com");
+            var ad = Dns.GetHostAddresses(Skylabs.Lobby.Client.ServerName);
             IPAddress ip = ad[0];
 #endif
 
             if (ad.Length <= 0) return;
             try
             {
-                if (hg != null) Program.Client = new Client(ip, hg.Port);
+                if (hg != null) Program.Client = new Client(ip, 0);
                 Program.Client.Connect();
                 Dispatcher.Invoke(new Action(() => frame1.Navigate(new StartGame())));
                 _joiningGame = false;

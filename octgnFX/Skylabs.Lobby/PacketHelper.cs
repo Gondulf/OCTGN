@@ -13,7 +13,7 @@ namespace Skylabs.Lobby
     {
         public static Element Gaming_CreateGame(Game game, string name, Jid me)
         {
-            var m = new Message(new Jid("game.skylabsonline.com"), me.Bare, MessageType.chat, "");
+            var m = new Message(new Jid("game." + Client.ServerName), me.Bare, MessageType.chat, "");
             var ge = new Element("gaming");
             ge.SetAttribute("type", "create");
             ge.AddTag("guid", game.Id.ToString());
@@ -24,6 +24,16 @@ namespace Skylabs.Lobby
             m.GenerateId();
             m.SetAttribute("type", "gaming");
             return m;
+        }
+        public static Element Gaming_GetList(Jid me)
+        {
+            var m = new Message(new Jid("game." + Client.ServerName), me.Bare, MessageType.chat, "");
+            var ge = new Element("gaming");
+            ge.SetAttribute("type", "list");
+            m.AddChild(ge);
+            m.GenerateId();
+            m.SetAttribute("type", "gaming");
+            return m;            
         }
     }
 }

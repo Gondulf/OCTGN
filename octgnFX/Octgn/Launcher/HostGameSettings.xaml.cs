@@ -102,7 +102,7 @@ namespace Octgn.Launcher
             var ad = new IPAddress[1];
             IPAddress ip = IPAddress.Parse("127.0.0.1");
 #else
-            var ad = Dns.GetHostAddresses("www.skylabsonline.com");
+            var ad = Dns.GetHostAddresses(Skylabs.Lobby.Client.ServerName);
             IPAddress ip = ad[0];
 #endif
 
