@@ -265,22 +265,19 @@ namespace Skylabs.Lobby
                     case "created":
                     {
                         var gid = elem.GetAttribute("id");
-                        if (OnDataRecieved != null)
-                            OnDataRecieved.Invoke(this, DataRecType.Announcement, "Game " + gid + " Created");
+                        Announce("Game " + gid + " Created");
                         break;
                     }
                     case "started":
                     {
                         var gid = elem.GetTag("id");
-                        if (OnDataRecieved != null)
-                            OnDataRecieved.Invoke(this, DataRecType.Announcement, "Game " + gid + " Started");
+                        Announce("Game " + gid + " Started");
                         break;
                     }
                     case "ended":
                     {
                         var gid = elem.GetTag("id");
-                        if (OnDataRecieved != null)
-                            OnDataRecieved.Invoke(this, DataRecType.Announcement, "Game " + gid + " Ended");
+                        Announce("Game " + gid + " Ended");
                         break;
                     }
                     case "list":
@@ -354,11 +351,7 @@ namespace Skylabs.Lobby
                 {
                     if (msg.Subject == null) msg.Subject = "";
                     if (msg.Body == null) msg.Body = "";
-                    var d = new Dictionary<string , string>();
-                    d["Message"] = msg.Body;
-                    d["Subject"] = msg.Subject;
-                    if(OnDataRecieved != null)
-                        OnDataRecieved.Invoke(this,DataRecType.Announcement, d);
+                    Announce(msg.Subject,msg.Body);
                 }
             }
         }
@@ -626,5 +619,20 @@ namespace Skylabs.Lobby
             Trace.WriteLine("[Lobby]Stop Called.");
             RebuildXmpp();
         }
+
+        private void Announce(string message) 
+        { 
+            var mess = new Tuple<string , string>("OCTGN" , message);
+            if (OnDataRecieved != null)
+                OnDataRecieved.Invoke(this, DataRecType.Announcement, mess);
+        }
+
+        private void Announce(string title, string message)
+        {
+            var mess = new Tuple<string , string>(title,message);
+            if (OnDataRecieved != null)
+                OnDataRecieved.Invoke(this, DataRecType.Announcement, mess);
+        }
+
     }
 }

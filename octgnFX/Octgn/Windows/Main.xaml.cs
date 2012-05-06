@@ -152,9 +152,9 @@ namespace Octgn.Windows
                     case Skylabs.Lobby.Client.DataRecType.GamesNeedRefresh:
                         break;
                     case Skylabs.Lobby.Client.DataRecType.Announcement:
-                        var d = data as Dictionary<String , String>;
+                        var d = data as Tuple<string , string>;
                         if(d != null)
-                            MessageBox.Show(d["Message"] , d["Subject"] , MessageBoxButton.OK , MessageBoxImage.Exclamation);
+                            MessageBox.Show(d.Item2 , d.Item1 , MessageBoxButton.OK , MessageBoxImage.Exclamation);
                         break;
                 }
                 tbStatus.Text = Program.LobbyClient.CustomStatus;
