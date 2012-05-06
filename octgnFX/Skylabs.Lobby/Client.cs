@@ -266,6 +266,7 @@ namespace Skylabs.Lobby
                     {
                         var gid = elem.GetAttribute("id");
                         Announce("Game " + gid + " Created");
+                        
                         break;
                     }
                     case "started":

@@ -89,6 +89,7 @@
     <Compile Include="Chat.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="FriendRequestNotification.cs" />
+    <Compile Include="GameRoom.cs" />
     <Compile Include="HostedGame.cs" />
     <Compile Include="HostedGameData.cs" />
     <Compile Include="Networking.cs" />

@@ -1,20 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using agsXMPP;
-using agsXMPP.Collections;
-using agsXMPP.Xml.Dom;
 using agsXMPP.protocol.client;
-using agsXMPP.protocol.component;
 using agsXMPP.protocol.extensions.chatstates;
 using agsXMPP.protocol.x;
-using agsXMPP.protocol.x.muc;
 using Message = agsXMPP.protocol.client.Message;
-using Presence = agsXMPP.protocol.client.Presence;
 
 namespace Skylabs.Lobby
 {
