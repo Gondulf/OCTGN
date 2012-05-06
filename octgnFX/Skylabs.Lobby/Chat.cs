@@ -58,8 +58,12 @@ namespace Skylabs.Lobby
                     break;
                 case MessageType.error:
                 {
-                    var nc = GetRoom(new NewUser(msg.From.Bare) , true);
-                    nc.OnMessage(this , msg);
+                    long rid = -1;
+                    if (!long.TryParse(msg.From.User, out rid))
+                    {
+                        var nc = GetRoom(new NewUser(msg.From.Bare) , true);
+                        nc.OnMessage(this , msg);
+                    }
                     break;
                 }
                 case MessageType.chat:
@@ -67,9 +71,15 @@ namespace Skylabs.Lobby
                     switch(msg.Chatstate)
                     {
                         case Chatstate.None:
-                            var nc = GetRoom(new NewUser(msg.From.Bare));
-                            nc.OnMessage(sender , msg);
+                        {
+                            long rid = -1;
+                            if(!long.TryParse(msg.From.User , out rid))
+                            {
+                                var nc = GetRoom(new NewUser(msg.From.Bare));
+                                nc.OnMessage(sender , msg);
+                            }
                             break;
+                        }
                         case Chatstate.active:
 
                             break;
@@ -88,8 +98,12 @@ namespace Skylabs.Lobby
                 }
                 case MessageType.groupchat:
                 {
-                    var nc = GetRoom(new NewUser(msg.From.Bare) , true);
-                    nc.OnMessage(this , msg);
+                    long rid = -1;
+                    if (!long.TryParse(msg.From.User, out rid))
+                    {
+                        var nc = GetRoom(new NewUser(msg.From.Bare) , true);
+                        nc.OnMessage(this , msg);
+                    }
                     break;
                 }
                 case MessageType.headline:

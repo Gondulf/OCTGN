@@ -31,7 +31,7 @@ namespace Octgn.Networking
             {
                 case "Binary":
                     {
-                        _handler.Binary();
+                        //_handler.Binary();
                         break;
                     }
                 case "SwitchWithAlternate":

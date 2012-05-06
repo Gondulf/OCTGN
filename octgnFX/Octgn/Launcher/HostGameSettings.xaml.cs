@@ -48,10 +48,10 @@ namespace Octgn.Launcher
         {
             if (type == Skylabs.Lobby.Client.DataRecType.HostedGameReady)
             {
-                var port = data as Int32?;
-                if (port != null)
+                var gid = data as long?;
+                if (gid != null)
                 {
-                    EndHostGame((int)port);
+                    EndHostGame((long)gid);
                     return;
                 }
                 EndHostGame(-1);
@@ -75,13 +75,15 @@ namespace Octgn.Launcher
             e.Handled = true;
             _beginHost = true;
             _ns = NavigationService;
+            Program.Game = new Game(GameDef.FromO8G(_game.FullPath));
+            Program.Client = new Client(IPAddress.Loopback,0);
             Program.LobbyClient.BeginHostGame(_game, textBox1.Text);
             
         }
 
-        private void EndHostGame(int port)
+        private void EndHostGame(long gid)
         {
-            if (port <= -1)
+            if (gid <= -1)
             {
                 _startGameTimer.Dispose();
                 _beginHost = false;
@@ -93,22 +95,8 @@ namespace Octgn.Launcher
                                              }));
                 return;
             }
-            Trace.WriteLine("Connecting to port: " + port.ToString(CultureInfo.InvariantCulture));
-            Program.LobbyClient.CurrentHostedGamePort = port;
             Program.GameSettings.UseTwoSidedTable = true;
-            Program.Game = new Game(GameDef.FromO8G(_game.FullPath));
             Program.IsHost = true;
-#if(DEBUG)
-            var ad = new IPAddress[1];
-            IPAddress ip = IPAddress.Parse("127.0.0.1");
-#else
-            var ad = Dns.GetHostAddresses(Skylabs.Lobby.Client.ServerName);
-            IPAddress ip = ad[0];
-#endif
-
-            if (ad.Length <= 0) return;
-            Program.Client = new Client(ip, port);
-            Program.Client.Connect();
             Dispatcher.Invoke(new Action(DoTheNavigate));
         }
 

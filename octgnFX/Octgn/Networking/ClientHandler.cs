@@ -47,12 +47,6 @@ namespace Octgn.Networking
             { if (Program.Client != null) Program.Client.Muted = 0; }
         }
 
-        public void Binary()
-        {
-            Program.Trace.TraceEvent(TraceEventType.Verbose, EventIds.NonGame, "Switched to binary protocol.");
-            Program.Client.Binary();
-        }
-
         public void Error(string msg)
         {
             Program.Trace.TraceEvent(TraceEventType.Error, EventIds.NonGame, "The server has returned an error: {0}", msg);
@@ -161,7 +155,6 @@ namespace Octgn.Networking
         public void Welcome(byte id)
         {
             Player.LocalPlayer.Id = id;
-            Program.Client.StartPings();
         }
 
         public void NewPlayer(byte id, string nick, ulong pkey)

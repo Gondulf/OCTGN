@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using Octgn.Networking;
 using Octgn.Play;
+using agsXMPP;
+using Client = Skylabs.Lobby.Client;
 
 namespace Octgn.Launcher
 {
@@ -45,6 +48,8 @@ namespace Octgn.Launcher
                               // Fix: defer the call to Program.Game.Begin(), so that the trace has 
                               // time to connect to the ChatControl (done inside ChatControl.Loaded).
                               // Otherwise, messages notifying a disconnection may be lost
+                              Program.LobbyClient.GameRoom.OnMessageRecieved += GameRoomOnOnMessageRecieved;
+                              Program.LobbyClient.GameRoom.OnUserListChange += GameRoomOnOnUserListChange;
                               try
                               {
                                   if(Program.Game != null)
@@ -59,9 +64,25 @@ namespace Octgn.Launcher
                             {
                                 if (_startingGame == false)
                                     Program.StopGame();
+                                Program.LobbyClient.GameRoom.OnMessageRecieved -= GameRoomOnOnMessageRecieved;
+                                Program.LobbyClient.GameRoom.OnUserListChange -= GameRoomOnOnUserListChange;
                                 Program.GameSettings.PropertyChanged -= SettingsChanged;
                                 Program.ServerError -= HandshakeError;
                             };
+        }
+
+        private void GameRoomOnOnUserListChange(object sender , List<Jid> users)
+        {
+            playersList.Items.Clear();
+            foreach(var jid in users)
+            {
+                playersList.Items.Add(jid.User);
+            }
+        }
+
+        private void GameRoomOnOnMessageRecieved(object sender , Jid @from , string message , DateTime rTime , Client.LobbyMessageType mType)
+        {
+            
         }
 
         private void SettingsChanged(object sender, PropertyChangedEventArgs e)

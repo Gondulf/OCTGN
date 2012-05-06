@@ -26,7 +26,7 @@ namespace Octgn.Networking
             {
                 case 0:
                     {
-                        _handler.Binary();
+                        //_handler.Binary();
                         break;
                     }
                 case 1:

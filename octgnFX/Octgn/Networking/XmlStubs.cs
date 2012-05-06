@@ -927,7 +927,7 @@ namespace Octgn.Networking
             }
             catch
             {
-                Program.Client.Disconnected();
+                //Program.Client.Disconnected();
             }
         }
     }

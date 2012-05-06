@@ -61,6 +61,7 @@ namespace Skylabs.Lobby
         public Chat Chatting { get; set; }
         public int CurrentHostedGamePort { get; set; }
         public bool DisconnectedBecauseConnectionReplaced { get; set; }
+        public GameRoom GameRoom { get; set; }
 #if(DEBUG || FDEBUG)
         public static readonly string ServerName = "skylabsonline.com";
 #else
@@ -114,6 +115,9 @@ namespace Skylabs.Lobby
             Chatting = new Chat(this, Xmpp);
             CurrentHostedGamePort = -1;
             _games = new List<HostedGameData>();
+            if(GameRoom != null)
+                GameRoom.Dispose();
+            GameRoom = null;
             agsXMPP.Factory.ElementFactory.AddElementType("gameitem", "octgn:gameitem", typeof(HostedGameData));
         }
 
@@ -201,18 +205,26 @@ namespace Skylabs.Lobby
                 case PresenceType.available:
                     if (pres.From.Server == "conference." + Client.ServerName)
                     {
-                        var rm = Chatting.GetRoom(new NewUser(pres.From), true);
-                        rm.AddUser(new NewUser(pres.MucUser.Item.Jid),false);
+                        long rid = -1;
+                        if (!long.TryParse(pres.From.User, out rid))
+                        {
+                            var rm = Chatting.GetRoom(new NewUser(pres.From) , true);
+                            rm.AddUser(new NewUser(pres.MucUser.Item.Jid) , false);
+                        }
                     }
                 break;
                 case PresenceType.unavailable:
                 {
                     if (pres.From.Server == "conference." + Client.ServerName)
                     {
-                        if (pres.MucUser.Item.Jid == null) break;
-                        if (pres.MucUser.Item.Jid.Bare == Me.User.Bare) break;
-                        var rm = Chatting.GetRoom(new NewUser(pres.From),true);
-                        rm.UserLeft(new NewUser(pres.MucUser.Item.Jid));
+                        long rid = -1;
+                        if (!long.TryParse(pres.From.User, out rid))
+                        {
+                            if(pres.MucUser.Item.Jid == null) break;
+                            if(pres.MucUser.Item.Jid.Bare == Me.User.Bare) break;
+                            var rm = Chatting.GetRoom(new NewUser(pres.From) , true);
+                            rm.UserLeft(new NewUser(pres.MucUser.Item.Jid));
+                        }
                     }
                     break;
                 }
@@ -264,9 +276,14 @@ namespace Skylabs.Lobby
                 {
                     case "created":
                     {
-                        var gid = elem.GetAttribute("id");
-                        Announce("Game " + gid + " Created");
-                        
+                        var sgid = elem.GetAttribute("id");
+                        long gid = -1;
+                        if (long.TryParse(sgid, out gid) && GameRoom == null)
+                        {
+                            GameRoom = new GameRoom(this,Xmpp,gid);
+                            if(OnDataRecieved != null) OnDataRecieved.Invoke(this , DataRecType.HostedGameReady , gid);
+                        }
+
                         break;
                     }
                     case "started":
