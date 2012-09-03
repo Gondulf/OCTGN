@@ -2,7 +2,6 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-        <META HTTP-EQUIV="refresh" CONTENT="0;URL=http://www.octgn.info/">
         <!--<link type="text/css" href="css/smoothness/jquery-ui-1.8.20.custom.css" rel="stylesheet">-->
         <link type="text/css" href="css/redmond/jquery-ui.css" rel="stylesheet">
         <link type="text/css" rel="stylesheet" href="css/jquery.fancybox-1.3.4.css" media="screen">
@@ -21,14 +20,22 @@
         <script type="text/javascript">
             $(function()
                 {
+<<<<<<< HEAD
                     $.get('http://23.21.146.193/currentversion.txt', function(data) {
+=======
+                    $.get('http://www.octgn.info/currentversion.txt', function(data) {
+>>>>>>> e9afe017a8383dc4437be4c7c47a0511689ecae2
 
                         xmlDoc = $.parseXML( data );
                         $xml = $( xmlDoc );
                         $version = $xml.find( "version" );
                         $installPath = $xml.find("installPath");
 
+<<<<<<< HEAD
                         $("#download-link").attr("href","http://23.21.146.193/" + $installPath.text())
+=======
+                        $("#download-link").attr("href","http://www.octgn.info/" + $installPath.text())
+>>>>>>> e9afe017a8383dc4437be4c7c47a0511689ecae2
                         $("#version-num").text($version.text());
 
                     });
